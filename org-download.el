@@ -539,9 +539,9 @@ It's inserted before the image link and is used to annotate it.")
     (org-download-replace-all current-name (concat new-name "." ext))
     (org-display-inline-images)))
 
-(defun org-download-rename-last-file ()
+(defun org-download-rename-last-file (newname)
   "Rename the last downloaded file saved in your computer."
-  (interactive)
+  (interactive "sRename last file to: ")
   (let* ((dir-path (org-download--dir))
          (newname (read-string "Rename last file to: " (file-name-base org-download-path-last-file)))
          (ext (file-name-extension org-download-path-last-file))
@@ -553,6 +553,21 @@ It's inserted before the image link and is used to annotate it.")
        (concat newname "." ext))
       (setq org-download-path-last-file newpath)
       (org-download--display-inline-images))))
+
+(defun org-download-replace ()
+  "Replace old image at point with new image downloaded from
+current kill and rename the image to the old name."
+  (interactive)
+  (let* ((path (org-element-property :path (org-element-context)))
+         (name (file-name-base path))
+         (case-fold-search t))
+    (org-download-delete)
+    (save-excursion
+      (forward-line -1)
+      (when (looking-at-p "^[ \t]*#\\+downloaded:")
+        (delete-region (line-beginning-position) (line-end-position))))
+    (org-download-image (current-kill 0))
+    (org-download-rename-last-file name)))
 
 (defun org-download-replace-all (oldpath newpath)
   "Function to search for the OLDPATH inside the buffer and replace it by the NEWPATH."
