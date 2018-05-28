@@ -539,9 +539,9 @@ It's inserted before the image link and is used to annotate it.")
     (org-download-replace-all current-name (concat new-name "." ext))
     (org-display-inline-images)))
 
-(defun org-download-rename-last-file (newname)
+(defun org-download-rename-last-file ()
   "Rename the last downloaded file saved in your computer."
-  (interactive "sRename last file to: ")
+  (interactive)
   (let* ((dir-path (org-download--dir))
          (newname (read-string "Rename last file to: " (file-name-base org-download-path-last-file)))
          (ext (file-name-extension org-download-path-last-file))
@@ -554,9 +554,23 @@ It's inserted before the image link and is used to annotate it.")
       (setq org-download-path-last-file newpath)
       (org-download--display-inline-images))))
 
-(defun org-download-replace ()
-  "Replace old image at point with new image downloaded from
-current kill and rename the image to the old name."
+(defun org-download-rename-file (newname)
+  "Rename the last downloaded file saved in your computer."
+  (interactive "sRename last file to: ")
+  (let* ((dir-path (org-download--dir))
+         (ext (file-name-extension org-download-path-last-file))
+         (newpath (concat dir-path "/" newname "." ext)))
+    (when org-download-path-last-file
+      (rename-file org-download-path-last-file newpath 1)
+      (org-download-replace-all
+       (file-name-nondirectory org-download-path-last-file)
+       (concat newname "." ext))
+      (setq org-download-path-last-file newpath)
+      (org-display-inline-images))))
+
+(defun org-download-yank-replace ()
+  "Yank and replace current image link without altering the file
+name."
   (interactive)
   (let* ((path (org-element-property :path (org-element-context)))
          (name (file-name-base path))
@@ -567,7 +581,7 @@ current kill and rename the image to the old name."
       (when (looking-at-p "^[ \t]*#\\+downloaded:")
         (delete-region (line-beginning-position) (line-end-position))))
     (org-download-image (current-kill 0))
-    (org-download-rename-last-file name)))
+    (org-download-rename-file name)))
 
 (defun org-download-replace-all (oldpath newpath)
   "Function to search for the OLDPATH inside the buffer and replace it by the NEWPATH."
