@@ -420,6 +420,12 @@ The screenshot tool is determined by `org-download-screenshot-method'."
                "Please install the \"pngpaste\" program from Homebrew."))))))
     (org-download-screenshot basename)))
 
+(defun org-download-clipboard ()
+  "Insert image that is already in the clipboard."
+  (interactive)
+  (let ((org-download-screenshot-method "xclip -selection clipboard -t image/png -o > %s"))
+    (org-download-screenshot)))
+
 (declare-function org-attach-dir "org-attach")
 (declare-function org-attach-attach "org-attach")
 (declare-function org-attach-sync "org-attach")
