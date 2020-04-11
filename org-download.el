@@ -237,9 +237,9 @@ For example:
               (org-up-heading-all (- (1- (org-current-level)) lvl)))
             (let ((heading (nth 4 (org-heading-components))))
               (if heading
-                  (replace-regexp-in-string
-                   " " "_"
-                   heading)
+                  (mapconcat (lambda (x) (pyim-hanzi2pinyin-simple x nil "_"))
+                             (s-split-words (downcase heading))
+                             "_")
                 "")))
         ""))))
 
