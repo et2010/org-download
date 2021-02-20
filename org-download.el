@@ -5,7 +5,7 @@
 ;; Author: Oleh Krehel
 ;; URL: https://github.com/abo-abo/org-download
 ;; Version: 0.1.0
-;; Package-Requires: ((emacs "24.3") (async "1.2"))
+;; Package-Requires: ((emacs "24.3") (async "1.2") pyim)
 ;; Keywords: multimedia images screenshots download
 
 ;; This file is not part of GNU Emacs.
